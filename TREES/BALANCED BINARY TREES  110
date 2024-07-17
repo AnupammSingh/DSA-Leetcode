@@ -1,0 +1,42 @@
+Given a binary tree, determine if it is height-balanced
+
+Input: root = [3,9,20,null,null,15,7]
+Output: true
+
+Input: root = [1,2,2,3,3,null,null,4,4]
+Output: false
+
+Input: root = []
+Output: true
+
+
+SOLUTION :
+
+var isBalanced = function(root) {
+
+     function getHeightAndCheckBalance(node) {
+        if (node === null) {
+            return { height: 0, balanced: true };
+        }
+        
+        const left = getHeightAndCheckBalance(node.left);
+        if (!left.balanced) {
+            return { height: 0, balanced: false };
+        }
+        
+        const right = getHeightAndCheckBalance(node.right);
+        if (!right.balanced) {
+            return { height: 0, balanced: false };
+        }
+        
+        const height = Math.max(left.height, right.height) + 1;
+        
+        const balanced = Math.abs(left.height - right.height) <= 1;
+        
+        return { height, balanced };
+    }
+    
+    const result = getHeightAndCheckBalance(root);
+    return result.balanced;
+    
+};
