@@ -1,0 +1,93 @@
+Given an integer array nums and an integer k, return the kth largest element in the array.
+
+Note that it is the kth largest element in the sorted order, not the kth distinct element.
+
+Can you solve it without sorting?
+
+ 
+
+Example 1:
+
+Input: nums = [3,2,1,5,6,4], k = 2
+Output: 5
+Example 2:
+
+Input: nums = [3,2,3,1,2,4,5,5,6], k = 4
+Output: 4
+ 
+
+Constraints:
+
+1 <= k <= nums.length <= 105
+-104 <= nums[i] <= 104
+
+
+SOLUTION :
+
+class MinHeap {
+    constructor() {
+        this.heap = [];
+    }
+
+    insert(num) {
+        this.heap.push(num);
+        this._heapifyUp(this.heap.length - 1);
+    }
+
+    remove() {
+        if (this.heap.length === 0) return null;
+        if (this.heap.length === 1) return this.heap.pop();
+
+        const root = this.heap[0];
+        this.heap[0] = this.heap.pop();
+        this._heapifyDown(0);
+
+        return root;
+    }
+
+    _heapifyUp(index) {
+        let parent = Math.floor((index - 1) / 2);
+        while (index > 0 && this.heap[index] < this.heap[parent]) {
+            [this.heap[index], this.heap[parent]] = [this.heap[parent], this.heap[index]];
+            index = parent;
+            parent = Math.floor((index - 1) / 2);
+        }
+    }
+
+    _heapifyDown(index) {
+        const length = this.heap.length;
+        let smallest = index;
+        const left = 2 * index + 1;
+        const right = 2 * index + 2;
+
+        if (left < length && this.heap[left] < this.heap[smallest]) {
+            smallest = left;
+        }
+        if (right < length && this.heap[right] < this.heap[smallest]) {
+            smallest = right;
+        }
+        if (smallest !== index) {
+            [this.heap[index], this.heap[smallest]] = [this.heap[smallest], this.heap[index]];
+            this._heapifyDown(smallest);
+        }
+    }
+
+    getRoot() {
+        return this.heap[0];
+    }
+}
+
+var findKthLargest = function(nums, k) {
+
+    const minHeap = new MinHeap();
+
+    for (const num of nums) {
+        minHeap.insert(num);
+        if (minHeap.heap.length > k) {
+            minHeap.remove();
+        }
+    }
+
+    return minHeap.getRoot();
+    
+};
